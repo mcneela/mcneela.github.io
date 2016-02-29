@@ -1,0 +1,9 @@
+<section class="blurb">
+    <h2>About Me</h2>
+    <p>I am a third-year student at the University of California, Berkeley pursuing a Bachelor's degree in Applied Mathematics with a focus in Computer Science.
+        My expertise lies in the cross-section of mathematics, computer science, and neuroscience, and in particular I seek to develop mathematical and computational
+        models for problems in Natural Language Processing, Artificial Intelligence, and Machine Learning.</p>
+    <ul class="actions">
+        <li><a href="#" class="button">Learn More</a></li>
+    </ul>
+</section>
