@@ -1,0 +1,32 @@
+---
+title: The Universal Approximation Theorem for Neural Networks
+categories: machine_learning
+layout: home_page 
+preview_img: images/deep_neural_network.png
+excerpt: Any continuous function can be approximated to an arbitrary degree of accuracy by some neural network.
+---
+<!-- <canvas id=c></canvas> -->
+<h1 align="center">The Universal Approximation Theorem for Neural Networks</h1> 
+In 1989, Hornik, Stinchombe, and White published a proof of the fact that for any continuous function $f$
+on a compact set $K$, there exists a feedforward neural network, having only a single hidden layer, which
+uniformly approximates $f$ within $\varepsilon > 0$ on $K$. We present here an elegant proof of the same
+fact given by Cybenko. The crux of the the theorem is simple, and begins with a few definitions. As I proceed
+through the proof, I'll try to bolster the intuition behind it by walking through a 3-dimensional example.
+
+By $I_n$, we denote the $n$-dimensional unit cube which we can represent as a Cartesian product of unit
+intervals $[0, 1]^n$. Recall the uniform norm of a function $f:A \to B$,
+$$ \|f\| = \sup \{|f(x)| : x \in A \} $$
+Now, we begin by giving an explicit mathematical definition of a feedforward neural network.
+</br></br>
+<b>Definition:</b> A <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a> is a
+function
+$$y(\mathbf{x}, \mathbf{w}) = \sigma \left( \sum_{j=1}^M w_{kj}^{(2)} \sigma \left( \sum_{i=1}^D w_{ji}^{(1)}x_i + w_{j0}^{(1)} \right) + w_{k0}^{(2)} \right)$$
+where $\sigma$ is a nonlinear <u>sigmoidal</u> activation function. What's a sigmoidal activation function? Glad you asked.
+</br></br>
+<b>Definition:</b> A <u>sigmoidal</u> activation function $\sigma : \mathbb{R}^D \to \mathbb{R}$ satisfies
+\[
+  \sigma(t) = \begin{cases}
+                1 & \text{ as } t \to \infty \\
+                0 & \text{ as } t \to -\infty
+              \end{cases}
+\]
