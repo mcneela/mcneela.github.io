@@ -7,36 +7,6 @@ excerpt: Any continuous function can be approximated to an arbitrary degree of a
 ---
 <h1 align="center">The Universal Approximation Theorem for Neural Networks</h1> 
 <canvas id=c></canvas>
-<!--
-ALGORITHM:
-
-structure:
-- gen( x,y,z ):
-    - create node at x,y,z // blue
-    - append some children to list:
-        - within a certain distance to parent
-        - outside a certain distance from any node
-        - within a global distance
-    - if no children
-        - don't append any
-        - set as end node // green-ish
-
-- gen( 0,0,0 ) // red
-- while list has items
-    - gen( position of first item )
-    - remove first item
-
-
-impulse behaviour:
-- pick( node ):
-    - if node is end node
-        - pick( original node )
-    - else
-        - pick( random node from node children )
-
-- pick( original node)
-
--->
 <script type="text/js">
 var w = c.width = window.innerWidth,
         h = c.height = window.innerHeight,
