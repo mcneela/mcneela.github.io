@@ -22,8 +22,8 @@ $M(I_n)$ to be the space of finite, signed regular Borel measures on $I_n$.
 Now, we begin by giving an explicit mathematical definition of a feedforward neural network.
 </br></br>
 <b>Definition:</b> A <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a> having $N$ 
-units or <i>neurons</i> is a function $y : \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}$ of the form
-$$y(\mathbf{x}, \mathbf{w}) = \sum_{i=1}^N \alpha_i \sigma \left(\mathbf{w}_i^{T}\mathbf{x} + b_i \right)$$
+units or <i>neurons</i> is a function $y : \mathbb{R}^d \to \mathbb{R}$ of the form
+$$y(\mathbf{x}) = \sum_{i=1}^N \alpha_i \sigma \left(\mathbf{w}_i^{T}\mathbf{x} + b_i \right)$$
 where $\mathbf{w}_i, \mathbf{x} \in \mathbb{R}^d$,  $\alpha_i, b_i \in \mathbb{R}$, and $\sigma$ is a nonlinear <u>sigmoidal</u> activation function. The $\mathbf{w}_i$ are called the <u>weights</u> of the network and the $b_i$ are called the <u>biases</u>
 of each unit. In effect, a neural network is just a linear combination of affine transformations of its inputs under sigmoidal
 activations. By an <a href="https://en.wikipedia.org/wiki/Affine_transformation"><u>affine transformation</u></a> we mean the 
