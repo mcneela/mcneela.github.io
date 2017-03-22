@@ -19,9 +19,9 @@
 
     <!-- Mini Posts -->
         <section>
-          <h3>Latest Posts in Machine Learning</h3>
+          <h3>Latest Posts in Machine Learning</h3> 
             <div class="mini-posts">
-                {% for post in site.categories.machine_learning %}
+                {% for post in site.categories.machine_learning limit: 1 %}
                     {% include mini_post.html target_post=post %}
                 {% endfor %}
             </div>
@@ -31,7 +31,7 @@
         <section>
           <h3>Latest Posts in Mathematics</h3>
             <ul class="posts">
-              {% for post in site.categories.math %}
+              {% for post in site.categories.math limit: 2 %}
                   {% include post_list.html target_post=post %}
               {% endfor %}
             </ul>
