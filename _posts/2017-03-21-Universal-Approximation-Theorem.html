@@ -16,17 +16,31 @@ through the proof, I'll try to bolster the intuition behind it by walking throug
 By $I_n$, we denote the $n$-dimensional unit cube which we can represent as a Cartesian product of unit
 intervals $[0, 1]^n$. Recall the uniform norm of a function $f:A \to B$,
 $$ \|f\| = \sup \{|f(x)| : x \in A \} $$
+As is convention in mathematical analysis, we write $C(I_n)$ to refer to the space of continuous functions
+(with codomain $\mathbb{C}$) on the unit cube. In general, this is a vector space. Additionally, we define
+$M(I_n)$ to be the space of finite, signed regular Borel measures on $I_n$.
 Now, we begin by giving an explicit mathematical definition of a feedforward neural network.
 </br></br>
-<b>Definition:</b> A <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a> is a
-function
-$$y(\mathbf{x}, \mathbf{w}) = \sigma \left( \sum_{j=1}^M w_{kj}^{(2)} \sigma \left( \sum_{i=1}^D w_{ji}^{(1)}x_i + w_{j0}^{(1)} \right) + w_{k0}^{(2)} \right)$$
-where $\sigma$ is a nonlinear <u>sigmoidal</u> activation function. What's a sigmoidal activation function? Glad you asked.
+<b>Definition:</b> A <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a> having $N$ 
+units or <i>neurons</i> is a function $y : \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}$ of the form
+$$y(\mathbf{x}, \mathbf{w}) = \sum_{i=1}^N \alpha_i \sigma \left(\mathbf{w}_i^{T}\mathbf{x} + b_i \right)$$
+where $\mathbf{w}_i, \mathbf{x} \in \mathbb{R}^d$,  $\alpha_i, b_i \in \mathbb{R}$, and $\sigma$ is a nonlinear <u>sigmoidal</u> activation function. The $\mathbf{w}_i$ are called the <u>weights</u> of the network and the $b_i$ are called the <u>biases</u>
+of each unit. In effect, a neural network is just a linear combination of affine transformations of its inputs under sigmoidal
+activations. By an <a href="https://en.wikipedia.org/wiki/Affine_transformation"><u>affine transformation</u></a> we mean the 
+$\mathbf{w}_i\mathbf{x} + b_i$ part of the definition. But what's a sigmoidal activation function? Glad you asked.
 </br></br>
-<b>Definition:</b> A <u>sigmoidal</u> activation function $\sigma : \mathbb{R}^D \to \mathbb{R}$ satisfies
+<b>Definition:</b> A <u>sigmoidal</u> activation function $\sigma : \mathbb{R} \to \mathbb{R}$ satisfies
 \[
-  \sigma(t) = \begin{cases}
+  \sigma(t) \to \begin{cases}
                 1 & \text{ as } t \to \infty \\
                 0 & \text{ as } t \to -\infty
               \end{cases}
 \]
+In other words, as $t$ gets exponentially large, $\sigma(t)$ limits towards 1, and as $t$ gets exponentially negative,
+$\sigma(t)$ limits towards 0.
+</br></br>
+<b>Definition:</b> We say $\sigma$ is <u>discriminatory</u> if $\mu \in M(I_n)$ is a measure satisfying
+\[
+  \int_{I_n} \sigma(\mathbf{w}_i^T\mathbf{x} + b_i)\ d\mu(\mathbf{x}) = 0
+\]
+for all $\mathbf{w}_i \in \mathbb{R}^d, b_i \in \mathbb{R}$ then $\mu = 0$.
