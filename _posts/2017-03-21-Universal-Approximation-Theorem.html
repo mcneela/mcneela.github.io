@@ -44,3 +44,10 @@ $\sigma(t)$ limits towards 0.
   \int_{I_n} \sigma(\mathbf{w}_i^T\mathbf{x} + b_i)\ d\mu(\mathbf{x}) = 0
 \]
 for all $\mathbf{w}_i \in \mathbb{R}^d, b_i \in \mathbb{R}$ then $\mu = 0$.
+</br></br>
+<b>Theorem 1:</b> If the $\sigma$ in the neural network definition is a continuous, discriminatory function, then the
+set of all neural networks is dense in $C(I_n)$.
+</br></br>
+<b>Proof:</b> Let $N \subset C(I_n)$ be the set of neural networks. As mentioned earlier, $N$ is a linear subspace of
+$C(I_n)$. To prove that $N$ is dense in $C(I_n)$, we will prove that its closure is $C(I_n)$. By way of contradiction,
+suppose that $\overline{N} \neq C(I_n)$.
