@@ -9,25 +9,35 @@ excerpt: Any continuous function can be approximated to an arbitrary degree of a
 <h1 align="center">The Universal Approximation Theorem for Neural Networks</h1> 
 In 1989, Hornik, Stinchombe, and White published a proof of the fact that for any continuous function $f$
 on a compact set $K$, there exists a feedforward neural network, having only a single hidden layer, which
-uniformly approximates $f$ within $\varepsilon > 0$ on $K$. We present here an elegant proof of the same
-fact given by Cybenko. The crux of the the theorem is simple, and begins with a few definitions. As I proceed
+uniformly approximates $f$ to within an arbitrary $\varepsilon > 0$ on $K$. I present here an elegant proof of the same
+fact given by Cybenko. In my exposition, I'll attempt to clear up some points of confusion which I encountered
+on my first read through as well as clarify some of the finer mathematical details that Cybenko glossed over in his
+paper. That said, the crux of the the theorem is simple, and begins with a few definitions. As I proceed
 through the proof, I'll try to bolster the intuition behind it by walking through a 3-dimensional example.
-
+</br></br>
 By $I_n$, we denote the $n$-dimensional unit cube which we can represent as a Cartesian product of unit
 intervals $[0, 1]^n$. Recall the uniform norm of a function $f:A \to B$,
 $$ \|f\| = \sup \{|f(x)| : x \in A \} $$
-As is convention in mathematical analysis, we write $C(I_n)$ to refer to the space of continuous functions
+As is the convention in mathematical analysis, we write $C(I_n)$ to refer to the space of continuous functions
 (with codomain $\mathbb{C}$) on the unit cube. In general, this is a vector space. Additionally, we define
-$M(I_n)$ to be the space of finite, signed regular Borel measures on $I_n$.
+$M(I_n)$ to be the space of finite, signed regular Borel measures on $I_n$. For those unfamiliar, a measure $\mu$
+is <u>regular</u> if and only if the following three conditions are satisfied
+<ol>
+<li>$\mu(K) < \infty$ for all compact sets $K$</li>
+<li>$\mu(E) = \inf\{\mu(U) : E \subseteq U, U \text{ open } \}$</li>
+<li>$\mu(E) = \inf\{\mu(K) : K \subseteq E, K \text{ compact} \}$</li>
+</ol>
 Now, we begin by giving an explicit mathematical definition of a feedforward neural network.
 </br></br>
-<b>Definition:</b> A <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a> having $N$ 
-units or <i>neurons</i> is a function $y : \mathbb{R}^d \to \mathbb{R}$ of the form
+<b>Definition:</b> A feedforward <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a>
+having $N$ units or <i>neurons</i> arranged in a single hidden layer is a function $y : \mathbb{R}^d \to \mathbb{R}$ of the form
 $$y(\mathbf{x}) = \sum_{i=1}^N \alpha_i \sigma \left(\mathbf{w}_i^{T}\mathbf{x} + b_i \right)$$
-where $\mathbf{w}_i, \mathbf{x} \in \mathbb{R}^d$,  $\alpha_i, b_i \in \mathbb{R}$, and $\sigma$ is a nonlinear <u>sigmoidal</u> activation function. The $\mathbf{w}_i$ are called the <u>weights</u> of the network and the $b_i$ are called the <u>biases</u>
-of each unit. In effect, a neural network is just a linear combination of affine transformations of its inputs under sigmoidal
-activations. By an <a href="https://en.wikipedia.org/wiki/Affine_transformation"><u>affine transformation</u></a> we mean the 
-$\mathbf{w}_i\mathbf{x} + b_i$ part of the definition. But what's a sigmoidal activation function? Glad you asked.
+where $\mathbf{w}_i, \mathbf{x} \in \mathbb{R}^d$,  $\alpha_i, b_i \in \mathbb{R}$, and $\sigma$ is a nonlinear <u>sigmoidal</u> 
+activation function. The $\mathbf{w}_i$ are the <u>weights</u> of the individual units and are applied to the input $\mathbf{x}$.
+The $\alpha_i$ are the <u>network weights</u> and are applied to the output of each unit in the hidden layer. Finally, $b_i$
+is the <u>bias</u> of each unit. In effect, a neural network of this sort 
+is just a linear combination of affine transformations of its inputs
+under sigmoidal activations. By an <a href="https://en.wikipedia.org/wiki/Affine_transformation"><u>affine transformation</u></a> we mean the $\mathbf{w}_i\mathbf{x} + b_i$ part of the definition. But what's a sigmoidal activation function? Glad you asked.
 </br></br>
 <b>Definition:</b> A <u>sigmoidal</u> activation function $\sigma : \mathbb{R} \to \mathbb{R}$ satisfies
 \[
@@ -39,7 +49,7 @@ $\mathbf{w}_i\mathbf{x} + b_i$ part of the definition. But what's a sigmoidal ac
 In other words, as $t$ gets exponentially large, $\sigma(t)$ limits towards 1, and as $t$ gets exponentially negative,
 $\sigma(t)$ limits towards 0.
 </br></br>
-<b>Definition:</b> We say $\sigma$ is <u>discriminatory</u> if $\mu \in M(I_n)$ is a measure satisfying
+<b>Definition:</b> We say $\sigma$ is <u>discriminatory</u> if $\mu \in M(I_n)$ is a measure such that if
 \[
   \int_{I_n} \sigma(\mathbf{w}_i^T\mathbf{x} + b_i)\ d\mu(\mathbf{x}) = 0
 \]
@@ -50,4 +60,24 @@ set of all neural networks is dense in $C(I_n)$.
 </br></br>
 <b>Proof:</b> Let $N \subset C(I_n)$ be the set of neural networks. As mentioned earlier, $N$ is a linear subspace of
 $C(I_n)$. To prove that $N$ is dense in $C(I_n)$, we will prove that its closure is $C(I_n)$. By way of contradiction,
-suppose that $\overline{N} \neq C(I_n)$.
+suppose that $\overline{N} \neq C(I_n)$. Then $\overline{N}$ is a closed, proper subspace of $C(I_n)$. By the Hahn-Banach
+Theorem, there exists a bounded linear functional on $C(I_n)$, call it $L$, such that $L(N) = L(\overline{N}) = 0$ but
+$L \neq 0$. Recall that a <u>linear funtional</u> is just a linear map from a vector space $X$ to $A$ where
+$A = \mathbb{R} \text{ or } \mathbb{C}$. It should be obvious that $\int_{I_n}$ acts as a linear functional on $C(I_n)$
+(if it's not, consider the domain and codomain of Lebesgue integration). By the Riesz Representation Theorem, we can write
+this functional in the following form
+$$L(h) = \int_{I_n} h(x)\ d\mu (x)$$
+for some $\mu \in M(I_n)$, for all $h \in C(I_n)$. In particular, since by definition any neural network is a member of $N$,
+and $L$ is identically zero on $N$, we have
+$$\int_{I_n} h(x)\ d\mu (x) = 0$$
+Since we took $\sigma$ to be discriminatory, we must have $\mu = 0$. But this contradicts our determination that $L \neq 0$,
+because
+$$\mu = 0 \implies \int_{I_n} h(x)\ d\mu(x) = 0 \quad \text{ for all } h \in C(I_n)$$
+Therefore, $N$ is dense in $C(I_n)$. $\square$
+</br></br>
+We have arrived at our desired result, but it all hinges on our assumption that the sigmoid function $\sigma(t)$ is discriminatory,
+a fact that we have not yet proved. Let's do that now.
+</br></br>
+<b>Lemma:</b> Any bounded, measurable sigmoidal function $\sigma$ is discriminatory. In particular, any continuous sigmoidal function
+is discriminatory.
+</br></br>
