@@ -81,3 +81,46 @@ a fact that we have not yet proved. Let's do that now.
 <b>Lemma:</b> Any bounded, measurable sigmoidal function $\sigma$ is discriminatory. In particular, any continuous sigmoidal function
 is discriminatory.
 </br></br>
+<b>Proof:</b> For any $x, y, \theta, \varphi$ we have
+\begin{align*}
+    \sigma(\lambda(y^Tx + \theta) + \varphi)
+    \begin{cases}
+        \to 1 & \text{ for } y^Tx + \theta > 0 \text{ as } \lambda \to \infty \\
+        \to 0 & \text{ for } y^Tx + \theta < 0 \text{ as } \lambda \to \infty \\
+        = \sigma(\varphi) & \text{ for } y^Tx + \theta = 0 \text{ for all } \lambda
+    \end{cases}
+\end{align*}
+Thus the functions parameterized by $\lambda$, $\sigma_{\lambda}(x)$ converge pointwise and boundedly to
+\begin{align*}
+    \gamma(x) =
+    \begin{cases}
+    1 & \text{ for } y^Tx  + \theta > 0 \\
+    0 & \text{ for } y^Tx  + \theta < 0 \\
+    \sigma(\varphi) & \text{ for } y^Tx  + \theta = 0 \\
+    \end{cases}
+\end{align*}
+as $\lambda \to \infty$.
+</br></br>
+Let $\Pi_{y, \theta} = \{x | y^Tx + \theta = 0\}$ be a hyperplane and let $H_{y, \theta}$ be the open half-space defined by
+$\{y^Tx + \theta > 0\}$. Then the Lebesgue Bounded Convergence Theorem gives
+\begin{align*}
+    0 &= \int_{I_n} \sigma_{\lambda}(x)\ d\mu(x) \\
+      &= \int_{I_n} \gamma(x)\ d\mu(x) \\
+      &= \sigma(\varphi)\mu(\Pi_{y, \theta}) + \mu(H_{y, \theta})
+\end{align*}
+for all $\varphi, \theta, y$.
+</br></br>
+We now need to show that the measure of all half-planes being 0 implies that the measure $\mu$ equals 0. To do this, we need
+to fix $y$. For a bounded measurable function $h$, define a linear functional $F$
+$$F(h) = \int_{I_n} h(y^Tx)\ d\mu(x)$$
+Note that $F$ is a bounded linear functional on $L^{\infty}(\mathbb{R})$ since $\mu$ is a finite signed measure. Let $h$ be the
+indicator function for the interval $[\theta, \infty)$ so that
+$$F(h) = \int_{I_n}h(y^Tx)\ d\mu(x) = \mu(\Pi_{y, -\theta}) + \mu(H_{y, -\theta}) = 0$$
+Similarly, $F(h) = 0$ if $h$ is the indicator function for the open interval $(\theta, \infty)$. By linearity, $F$ is 0 for the
+indicator function on any interval and hence for any simple function. Simple functions are dense in $L^{\infty}(\mathbb{R})$, so
+$F = 0$.
+</br></br>
+In particular, the bounded measurable functions $s(u) = \sin(m \cdot u)$ and $c(u) = \cos(m \cdot u)$ give
+$$F(s + ic) = \int_{I_n} = \cos(m^Tx) + i\sin(m^Tx)\ d\mu(x) = \int_{I_n} e^{im^Tx}\ d\mu(x) = 0$$
+for all $m$. Thus, the Fourier transform of $\mu$ is 0 and so $\mu$ must be zero as well. Thus $\sigma$ is
+discriminatory.
