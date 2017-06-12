@@ -6,11 +6,11 @@ preview_img: images/deep_neural_network.png
 excerpt: A discriminative model for classification.
 ---
 
-<h1>Gaussian Discriminant Analysis</h1>
+<h1 align="center">Gaussian Discriminant Analysis</h1>
 We begin with a definition. Consider the following general classification problem: we are given a 
 set of points $\{x_1, \ldots, x_N\} \in \mathbb{R}^d$. We seek to assign each of these to one of
 $K$ possible classes $C_k$. Let $\delta(x): \mathbb{R}^d \to \{1, \ldots, K\}$
-be our {\it discriminant function} which for a given input $x$ computes an assignment $k$ of $x$ to
+be our <i>discriminant function</i> which for a given input $x$ computes an assignment $k$ of $x$ to
 one of the $K$ classes. The model we will define provides a convenient and intuitive assignment rule
 for $\delta$. We define
     $$\delta(x) := \max_k p(C_k|x)$$
@@ -20,17 +20,17 @@ class-conditional densities $p(x|C_k)$ and then apply Bayes' Rule to infer the p
 In order to concretize our presentation, let's turn our attention to two models which make the assumption
 that the class-conditional densities are independentally Gaussian.
 
-<h2>Linear Discriminant Analysis</h2>
+<h2 align="center">Linear Discriminant Analysis</h2>
 Linear Discriminant Analysis, abbreviated LDA, is a generative model which gives linear decision boundaries
 separating classes. Before we present the core of the model, recall the PDF for the multivariate normal distribution
 having mean $\mu = [\mu_1, \ldots, \mu_d]^T \in \mathbb{R}^d$ and covariance $\Sigma$
-    $$ \mathcal{N}(x|\mu, \Sigma) = \frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}} e^{-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)}$$  
+    $$\mathcal{N}(x|\mu, \Sigma) = \frac{1}{(2\pi)^{d/2}|\Sigma|^{1/2}} e^{-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)}$$  
 The LDA model derives from the following three assumptions
-\begin{itemize}
-    \item Each class has its own mean $\mu_k \in \mathbb{R}^d$
-    \item The classes share a covariance matrix $\Sigma$ 
-    \item $p(x|C_k) \sim \mathcal{N}(x|\mu_k, \Sigma)$
-\end{itemize}
+<ol style="padding-left: 50px;">
+<li>Each class has its own mean $\mu_k \in \mathbb{R}^d$</li>
+<li>The classes share a covariance matrix $\Sigma$</li>
+<li>$p(x|C_k) \sim \mathcal{N}(x|\mu_k, \Sigma)$</li>
+</ol>
 Given the above, we obtain $p(C_k|x)$ using Bayes' Rule
 $$p(C_k|x) = \frac{p(x|C_k)p(C_k)}{\sum_{l=1}^K p(x|C_l)p(C_l)}$$
 
@@ -58,7 +58,7 @@ $x^T{\Sigma^{-1}}\mu_k$. The decision boundary between any two classes $j$ and $
 $\{x : \delta_j(x) = \delta_k(x) \}$. Our formulation of the classification problem is now complete, and we have a concrete decision
  rule for assigning $x$ to a class $k$, namely
 $$\delta(x) = \max_k \delta_k(x)$$
-<h2>Quadratic Discriminant Analysis</h2>
+<h2 align="center">Quadratic Discriminant Analysis</h2>
 We now generalize the LDA decision rule by removing the simplifying assumption that each of the $k$ classes shares a common
 covariance matrix. Instead, we allow each class to define its own covariance $\Sigma_k$. We proceed to derive the discriminant
 function $\delta_k(x)$ in exactly the same way as was done for LDA. The only place previously where we used the shared covariance
