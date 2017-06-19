@@ -13,6 +13,7 @@ are achievable via the application of non-linear kernel functions to input vecto
 The SVM optimization problem seeks to maximize a quantity called <i>margin</i>, intuitively
 the orthogonal distance between the decision surface and the nearest point in feature space.
 
-To formulate the model, we make the assumption of a linear hyperplane in feature space defined
-as
+Suppose we are given training data $\mathbf{x}_1, \ldots, \mathbf{x}_N \in \mathbb{R}^N$ with
+associated labels $t_1, \ldots, t_N \in \{-1, 1\}$. Then to formulate the model, we make the 
+assumption of a linear hyperplane in feature space defined as
 $$y(\mathbf{x}) = \mathbf{w}^T\phi(\mathbf{x}) + b = 0$$
