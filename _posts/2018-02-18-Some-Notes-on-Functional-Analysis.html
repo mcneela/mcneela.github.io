@@ -1,0 +1,35 @@
+---
+title: Some Notes on Functional Analysis 
+categories: mathematics
+layout: home_page 
+preview_img: images/deep_neural_network.png
+excerpt: Normed Vector Spaces
+---
+<h1 align="center">Some Notes on Functional Analysis</h1>
+
+Functional Analysis generalizes the techniques of real and complex analysis to vector spaces of infinite dimension over $\mathbb{R}$ and $\mathbb{C}$.
+<br>
+<h2><b>Normed Vector Spaces</b></h2>
+Let $K$ be a field (typically $\mathbb{R}$ or $\mathbb{C}$) and $\mathcal{X}$ a vector space over $K$.
+<br>
+<b>Definition:</b> A <b>seminorm</b> on $\mathcal{X}$ is a function $x \to \| x \|$ from $\mathcal{X}$ to $[0, \infty)$ satisfying
+<li> $\| x + y \| \leq \|x \| + \| y \|$ for all $x, y \in \mathcal{X}$</li>
+<li> $\| \lambda x\| = |\lambda | \|x \|$ for all $x \in \mathcal{X}$ and $\lambda \in K$.</li>
+<br>
+A seminorm becomes a norm provided that $\| x \| = 0 \implies x = 0$. A vector space equipped with a norm is called a <b>normed vector space</b>.
+<br>
+The function $\rho (x, y) = \| x - y\|$ induces a metric on $\mathcal{X}$ and defines a topology called the <b>norm topology</b>.
+We say that two norms $\| \cdot \|_1, \| \cdot \|_2$ are <b>equivalent</b> if there exist $C_1, C_2 > 0$ such that
+$$C_1 \|x\|_1 \leq \|x\|_2 \leq C_2\|x\|_1 \quad \forall x \in X$$
+A normed vector space which is complete wrt the norm metric is called a <b>Banach Space</b>.
+<br>
+<b>Theorem:</b> <it> A normed vector space in $\mathcal{X}$ is complete iff every absolutely convergent series in $\mathcal{X}$ converges.</it>
+<br>
+<b>Proof:</b> Suppose $\mathcal{X}$ is complete and $\sum_1^\infty \| x_n \| < \infty$, let $S_N = \sum_1^N x_n$. Then for $N > M$ we have
+$$\| S_N - S_M \| \leq \sum_{M+1}^N \| x_n \| \to 0 \ \text{as} \ M, N \to \infty$$
+so the sequence $\{S_n \}$ is Cauchy and hence convergent. Conversely, suppose that every absolutely convergent series converges, and
+let \{ x_n \} be a Cauchy sequence. We can choose $n_1 < n_2 < \cdots$ such that $\|x_n - x_m\| < 2^{-j}$ for $m, n \geq n_j$.
+Let $y_1 = x_{n_1}$ and $y_j = x_{n_j} - x_{n_{j-1}}$ for $j > 1$. Then $\sum_{1}^k y_j = x_{n_k}$, and
+$$ \sum_{1}^\infty \| y_j \| \leq \| y_1 \| + \sum_1^\infty 2^{-j} = \|y_1\| + 1 < \infty$$,
+so $\lim x_{n_k} - \sum_{1}^\infty y_j$ exists. But since $\{ x_n \}$ is Cauchy, it is easily verified that $\{ x_n \}$ converges to
+the same limit as $\{x_{n_k}\}$.
