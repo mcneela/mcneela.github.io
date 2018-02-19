@@ -6,12 +6,7 @@
             <a href="about.html" class="logo"><img src="images/face2.jpg" alt="" /></a>
             <header>
                 <h2>Daniel McNeela</h2>
-                <p>Machine Learning Engineer </br>
-                &#8226
-                </br> 
-                Data Scientist
-                </br>
-                &#8226
+                <p>Machine Learning Researcher at <a href="http://machinevantage.com">machineVantage</a></br>
                 </br>
                 B.A. in Applied Mathematics from <a href="http://www.berkeley.edu">University of California, Berkeley</a></p>
             </header>
@@ -19,7 +14,7 @@
 
     <!-- Mini Posts -->
         <section>
-          <h3>Latest Posts in Machine Learning</h3> 
+          <h3>A Random Post About Machine Learning</h3> 
             <div class="mini-posts">
                 {% for post in site.categories.machine_learning limit: 1 %}
                     {% include mini_post.html target_post=post %}
