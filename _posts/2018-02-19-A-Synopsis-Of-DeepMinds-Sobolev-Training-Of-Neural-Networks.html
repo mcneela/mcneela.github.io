@@ -26,7 +26,7 @@ Our training objective becomes
 $$\sum_{i=1}^N \left[ l(y_{\theta}(x_i), f(x_i)) + \sum_{j=1}^K l(D^j_{\mathbf{x}}(y_{\theta}(x_i)), D^j_{\mathbf{x}}(f(x_i)))\right]$$
 
 Of course, this is all well and good, but the natural question is "how does one go about acquiring derivative samples for supervision of the Sobolev training objective?"
-The authors don't really give us an answer in the general case, but they do put forth a couple of use cases for which such training
+The authors don't really give us an answer in the general case, but they do put forth a couple of circumstances under which such training
 data might be readily available. 
 </br></br>
 The first example they give pertains to those instances where the ground truth
@@ -38,3 +38,22 @@ They also mention that in certain online instances, even if
 access to analytic-form gradients for sampling is unavailable,
 those same gradients can be approximated using the technique of
 finite differences. More on that in a bit.
+</br></br>
+<h2>What's a Sobolev Space and Why the Formalism?</h2>
+Simply put, a Sobolev Space is a vector space where the
+vectors are functions and their derivatives with norms defined
+on them. The introduction of a norm gives us a way of quantifying the distance between any two functions or derivatives, and thus allows us to optimize functions like the
+one given as the Sobolev training objective.
+There's a lot of fancy math going on with Sobolev Spaces under
+the hood. For example, when one defines such a space, they
+normally extend the definition of differentiability to apply
+in a *weak* sense. This is done to allow for the convergence of arbitrary Cauchy sequences in order to turn the space into a <b>complete</b> and <b>Banach space</b>. Those are both functional analytic notions, and if you'd like a primer on the
+underlying math, I encourage you to consult my notes on functional analysis on this blog.
+</br></br>
+In order to make things crystal clear, I'll quickly introduce the natural norm induced on a Sobolev space. 
+</br></br>
+<b>Definition:</b> A (one-dimensional) Sobolev space $W^{k,p}$ is the subset of functions $f$ in $L^p(\mathbb{R})$ such that
+$f$ and its weak derivatives up to some order $k$ have a finite $L^p$ norm for given $p (1 \leq p \leq \infty)$.
+</br></br>
+With that, the norm on $f$ is defined as
+$$\| f \|_{k, p} = \left(\sum_{i=0}^k \| f^{(i)}\|_p^p\right)^{\frac{1}{p}} = \left( \sum_{i=0}^k \int |f^{(i)}(t)|^p \ dt\right)^{\frac{1}{p}}$$
