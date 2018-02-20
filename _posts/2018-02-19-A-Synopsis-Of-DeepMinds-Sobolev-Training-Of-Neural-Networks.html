@@ -1,0 +1,28 @@
+---
+title: A Synopsis of DeepMind's Sobolev Training of Neural Networks
+categories: machine_learning
+layout: home_page 
+preview_img: images/sobolev.png
+excerpt: Take a neural network and achieve better results by training to not only optimize function values, but derivative values as well.
+---
+<b>** This tutorial is currently a work in progress **</b>
+<h1 align="center">A Synopsis of DeepMind's Sobolev Training of Neural Networks</h1>
+<a href="https://arxiv.org/pdf/1706.04859.pdf">Here</a> is a link to the original paper so that you can follow along as you read.
+</br>
+<a href="http://github.com/mcneela/Sobolev">Here</a> is a link to the code used for the tutorial.
+</br></br>
+I'll preface this tutorial by stating that despite the fancy formalisms of analysis in which this paper is dressed, at its core the main premise is quite simple: <b>take a neural network and achieve better results by training to not only optimize function values,
+but derivative values as well.</b>
+</br></br>
+That is, when training an ordinary neural network, we have a set of training data $\{x_i, f(x_i)\}_{i=1}^N$ along with a model $y_{\theta}(x)$ parametrized by weights $\theta$, and we seek to have $y_{\theta}$ match $f$ as closely as possible while achieving low generalization
+error by minimizing the training objective
+$$\sum_{i=1}^N l(y_{\theta}(x_i), f(x_i))$$
+where $l$ is a loss function such as mean-squared error or the cross-entropy loss.
+</br></br>
+<b>Sobolev training</b> augments this traditional paradigm by making the assumption that in addition to the training data for $f$, we
+have access to training datasets for all of $f$'s derivatives up to order $K$, i.e. we have sets $\{x_i, D^1_{\mathbf{x}}(f(x_i))\}_{i=1}^N, \ldots, \{x_i, D^K_{\mathbf{x}}(f(x_i))\}_{i=1}^N$. With this data, we seek to not only match the outputs our model $y_{\theta}$ to the sampled function values present in the training data but also match our model's derivatives to the sampled training derivatives.
+The training process is generalized in the way you would expect.
+Our training objective becomes
+$$\sum_{i=1}^N \left[ l(y_{\theta}(x_i), f(x_i)) + \sum_{j=1}^K l(D^j_{\mathbf{x}}(y_{\theta}(x_i)), D^j_{\mathbf{x}}(f(x_i)))\right]$$
+
+While there are other methods for 

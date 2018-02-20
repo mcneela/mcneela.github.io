@@ -17,3 +17,8 @@ Suppose we are given training data $\mathbf{x}_1, \ldots, \mathbf{x}_N \in \math
 associated labels $t_1, \ldots, t_N \in \{-1, 1\}$. Then to formulate the model, we make the 
 assumption of a linear hyperplane in feature space defined as
 $$y(\mathbf{x}) = \mathbf{w}^T\phi(\mathbf{x}) + b = 0$$
+
+We seek to classify each of the $N$ training points correctly, in which case we have
+$t_ny(\mathbf{x}_n) \geq 1$ for all $n$. The distance between a given point $x$ and
+the decision boundary is
+$$\|y(x)
