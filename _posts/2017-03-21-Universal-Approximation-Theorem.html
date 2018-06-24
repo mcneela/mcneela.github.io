@@ -36,7 +36,8 @@ sizes for a single set, they all ideally convey some idea of how much space that
 it resides.
 All the integration to be done throughout this proof will be with respect to regular measures on $C(I_n)$. Why is this important?
 For one thing, as their name suggests, regular measures exhibit a certain structural "regularity". They behave in the way that,
-in some sense, one would intuitively expect. For example, the measure of compact set, has finite measure. This makes sense. In
+in some sense, one would intuitively expect. For example, the measure of a compact set, has finite measure when the measure being 
+applied is regular. This makes sense. In
 a metric space, compact sets are closed and bounded, and it would be weird for a set $K$ to be compact yet somehow take up infinite space. Similarly, if we are measuring a set $E$ and we take the lower bound on the measure of open sets subsuming $E$, we should
 get the measure of $E$. The same goes for when we approximate $E$ by compact sets from below. Another reason for restricting
 ourselves to regular measures is that this will be a prerequisite for invoking the Riesz Representation Theorem in our proof.
@@ -47,17 +48,21 @@ $$ \|f\| = \sup \{|f(x)| : x \in A \} $$
 In other words, the uniform norm gives an upper bound on all possible values of $f$, and for two functions $f, g$ we see that
 $\| f - g \|$ gives a uniform bound on the extent to which $f$ and $g$ differ from one another.
 What we aim to show is that the set of feedforward neural networks is dense in $C(I_n)$ with respect to the uniform norm. A set
-$A$ is dense in $X$ if $\overline{A} = X$. Since we are working in a metric space where we have a notion of distance between functions
-(here the metric is the uniform norm), we can
-define denseness in more intuitive terms. In this case, we say $A$ is dense in $X$ if for every $x\in X$ there exists a sequence
+$A$ is dense in $X$ if $\overline{A} = X$ (the closure of $A$ is the entire space $X$). Since we are working in a metric space
+where we have a notion of distance between functions (here the metric is the uniform norm), we can
+define "denseness" in more intuitive terms. In this case, we say $A$ is dense in $X$ if for every $x\in X$ there exists a sequence
 $(a_n)_{n\in \mathbb{N}} \in A$ such that $\lim_{n \to \infty} a_n = x$. With this in mind, we can reformulate the guarantee of the
 uniform approximation theorem in a few different ways
 <ol style="padding-left: 50px;">
-    <li> The set of all feedforward neural networks $N$ is dense in $C(I_n)$.</li>
-    <li> For every continuous function $f \in C(I_n)$, there exists a sequence of neural networks $(n_j) \in N$ converging to
+    <li> The set of all feedforward neural networks $\mathcal{N}$ is dense in $C(I_n)$.</li>
+    <li> For every continuous function $f \in C(I_n)$, there exists a sequence of neural networks $(n_j) \in \mathcal{N}$ converging to
          $f$, i.e. $\lim_{j \to \infty} n_j = f$.</li>
-    <li> For every continuous function $f \in C(I_n)$ and $\varepsilon > 0$ there exists $g \in N$ such that $\|g - f\| < \varepsilon$.</li>
+    <li> For every continuous function $f \in C(I_n)$ and $\varepsilon > 0$ there exists a neural network $g \in \mathcal{N}$ such that $\|g - f\| < \varepsilon$.</li>
 </ol>
+That last formulation may be the most intuitive. Effectively, it's saying that you can specify an arbitrary precision $\varepsilon$
+to within which you'd like to approximate a continuous function $f$ on $I_n$ and a neural network exists that will accomplish this.
+Of course, the proof gives us no way to go about explicitly constructing or finding such a neural network, but hopefully the guarantee
+still provides you with some theoretical peace of mind.
 Having formulated our problem, we begin by giving an explicit mathematical definition of a feedforward neural network.
 </br></br>
 <b>Definition:</b> A feedforward <a href="https://en.wikipedia.org/wiki/Artificial_neural_network"><u>neural network</u></a>
@@ -101,9 +106,9 @@ We are now ready to present the Universal Approximation Theorem and its proof.
 <b><u>Theorem 1</u></b> If the $\sigma$ in the neural network definition is a continuous, discriminatory function, then the
 set of all neural networks is dense in $C(I_n)$.
 </br></br>
-<b>Proof:</b> Let $N \subset C(I_n)$ be the set of neural networks. As mentioned earlier, $N$ is a linear subspace of
-$C(I_n)$. To prove that $N$ is dense in $C(I_n)$, we will prove that its closure is $C(I_n)$. By way of contradiction,
-suppose that $\overline{N} \neq C(I_n)$. Then $\overline{N}$ is a closed, proper subspace of $C(I_n)$. 
+<b>Proof:</b> Let $\mathcal{N} \subset C(I_n)$ be the set of neural networks. As mentioned earlier, $\mathcal{N}$ is a linear subspace of
+$C(I_n)$. To prove that $\mathcal{N}$ is dense in $C(I_n)$, we will prove that its closure is $C(I_n)$. By way of contradiction,
+suppose that $\overline{\mathcal{N}} \neq C(I_n)$. Then $\overline{\mathcal{N}}$ is a closed, proper subspace of $C(I_n)$. 
 </br></br>
 Now, let's take a quick digression here to review the statement of the Hahn-Banach Theorem.
 </br></br>
@@ -111,10 +116,10 @@ Now, let's take a quick digression here to review the statement of the Hahn-Bana
 and $f$ a linear functional on $M$ such that $f(x) \leq p(x)$ for all $x \in M$. Then there exists a linear functional $F$ on
 $X$ such that $F(x) \leq p(x)$ for all $x \in X$ and $F|M = f$.
 </br></br>
-For us, the Hahn-Banach Theorem gives us a way to extend a bounded linear functional defined on $N$ to one defined on all of
+For us, the Hahn-Banach Theorem gives us a way to extend a bounded linear functional defined on $\mathcal{N}$ to one defined on all of
 $C(I_n)$ in a way that will eventually allow us to derive a contradiction.
 By the Hahn-Banach
-Theorem, there exists a bounded linear functional on $C(I_n)$, call it $L$, such that $L(N) = L(\overline{N}) = 0$ but
+Theorem, there exists a bounded linear functional on $C(I_n)$, call it $L$, such that $L(\mathcal{N}) = L(\overline{\mathcal{N}}) = 0$ but
 $L \neq 0$. Recall that a <a href="https://en.wikipedia.org/wiki/Linear_form"><u>linear functional</u></a>
  is just a linear map from a vector space $X$ to $A$ where
 $A = \mathbb{R} \text{ or } \mathbb{C}$. It should be obvious that $\int_{I_n}$ acts as a linear functional on $C(I_n)$
@@ -134,13 +139,13 @@ regular Borel measures introduced earlier.
 By the Riesz Representation Theorem, we can write
 the functional $L$ in the following form
 $$L(h) = \int_{I_n} h(x)\ d\mu (x)$$
-for some $\mu \in M(I_n)$, for all $h \in C(I_n)$. In particular, since by definition any neural network is a member of $N$,
-and $L$ is identically zero on $N$, we have
+for some $\mu \in M(I_n)$, for all $h \in C(I_n)$. In particular, since by definition any neural network is a member of $\mathcal{N}$,
+and $L$ is identically zero on $\mathcal{N}$, we have
 $$\int_{I_n} h(x)\ d\mu (x) = 0$$
 Since we took $\sigma$ to be discriminatory, we must have $\mu = 0$. But this contradicts our determination that $L \neq 0$,
 because
 $$\mu = 0 \implies \int_{I_n} h(x)\ d\mu(x) = 0 \quad \text{ for all } h \in C(I_n)$$
-Therefore, $N$ is dense in $C(I_n)$. $\square$
+Therefore, $\mathcal{N}$ is dense in $C(I_n)$. $\square$
 </br></br>
 We have arrived at our desired result, but it all hinges on our assumption that the sigmoid function $\sigma(t)$ is discriminatory,
 a fact that we have not yet proved. Let's do that now.
