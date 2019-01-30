@@ -1,0 +1,39 @@
+---
+title: A Bit About Manifolds 
+categories: math
+layout: home_page 
+preview_img: images/manifold.png
+excerpt: A manifold is a structure
+---
+<b> Work In Progress! </b>
+<h1>A Bit About Manifolds</h1>
+A <i>manifold</i>, in the broadest sense, is a structure which is locally homeomorphic to $\mathbb{R}^n$
+at each of its open sets. In layman's terms, this means that while a manifold may be sufficiently "abstracted"
+such that its elements look nothing like those of $\mathbb{R}^n$, we can regardless treat the manifold as if
+it's $\mathbb{R}^n$, with a few potential caveats. But first, the formal definition.
+</br></br>
+<u><b>Definition 1</b></u> A <i>manifold</i> is a second countable Hausdorff space $M$ equipped with a collection of
+"charts" such that for each open $U \subset M$ there exists a homeomorphism $\phi: U \to V \subset \mathbb{R}^n$
+where $V$ is itself open. This $\phi$ is called a chart. We require that each $x \in M$ be in the domain of some
+chart. We require that the collection of charts be maximal subject to the conditions above.
+</br></br>
+If we want to be able to perform calculus on our manifolds, however, a bit more is required.
+</br></br>
+<u><b>Definition 2</b></u> A <i>smooth</i> ($C^\infty$) manifold is a manifold with the additional
+restriction that the change of coordinates defined by the composition of one chart and another's inverse is itself
+$C^\infty$. That is, we require for two charts $\phi$ and $\psi$ that given $\phi: U \to U' \subset \mathbb{R}^n, \psi: V \to V' \subset \mathbb{R}^n$, the following be continuously differentiable of all orders
+
+$$\phi \psi^{-1} : \psi (U \cap V) \to \phi (U \cap V)$$
+
+Both of these definitions look like quite the mouthful at first, but there's really little in the way of hidden complexity.
+The defacto differentiability requirements on the change of coordinates mappings make inherent sense. If this differentiability
+was not presupposed, there'd be nothing restricting the manifold from being put together as a patchwork of locally smooth
+neighborhoods that don't inherently connect in a "nice" way, i.e. there may exist discontinuities at the points where they join.
+</br></br>
+The notion of second countability may throw some for a loop, so I'll take some time to review it. A topological space is called
+second countable if it exhibits a countable base $\mathcal{B} = \cup_{i=1}^\infty B_i$. This is a property that's characteristic
+of many conventionally "nice" mathematical spaces, and its presence in this definition is a natural consequence of the homeomorphicity
+with $\mathbb{R}^n$. $\mathbb{R}^n$ is second countable, and second countability is a topological invariant. More concretely,
+since there exists a countable collection of open sets $\mathcal{B}$ which form a base for $\mathbb{R}^n$, we can take this collection and form
+its equivalent in $M$ by applying the appropriate inverse chart $U_i = \phi_i^{-1}(B_i)$ for $B_i \in \mathcal{B}$ to get a countable
+base $\mathcal{U} = \cup_{i=1}^\infty$ for $M$.
