@@ -62,9 +62,9 @@ i</br></br>
 </br></br>
 Then the notions of morphism and isomorphism can be formulated accordingly as...
 </br></br>
-<u><b>Definition</b></u> A <i>morphism</i> of functionally structure spaces
-$$X, F_X) \to (Y, F_Y)$$
-is a map $\phi:X \to Y$ such that composition $f \to f \circ \phi$ charries $F_Y(U)$ into $F_X(\phi^{-1}(U))$. An isomorphism is a morphism $\phi$ such that $\phi^{-1}$ exists as a morphism.
+<u><b>Definition</b></u> A <i>morphism</i> of functionally structured spaces
+$$(X, F_X) \to (Y, F_Y)$$
+is a map $\phi:X \to Y$ such that composition $f \to f \circ \phi$ carries $F_Y(U)$ into $F_X(\phi^{-1}(U))$. An isomorphism is a morphism $\phi$ such that $\phi^{-1}$ exists as a morphism.
 </br></br>
 <h2>Tangent Spaces, Differentials, and All Things Adjacent</h2>
 The fundamental concept of differential calculus is the derivative, which allows us to compute the line tangent to a curve at any
@@ -75,4 +75,27 @@ along a surface. It will turn out that the set of these vectors in fact comprise
 $\gamma(0) = p$. Let $f$ be a smooth function defined on an open neighborhood of $p$. Then we define the <i>directional derivative</i>
 of $f$ along $\gamma$ at $p$ to be
 $$D_\gamma(f) = \frac{d}{dt} f(\gamma(t))|_{t=0}$$
-We call the operator $D_\gamma$ the <i>tangent vector</i> to $\gamma$ at $p$. 
+We call the operator $D_\gamma$ the <i>tangent vector</i> to $\gamma$ at $p$. For a point $p \in M$ we denote by $T_p(M)$ the vector
+space of all tangent vectors to $M$ at $p$.
+</br></br>
+To understand the operator $D_\gamma$ in a more global context, it behooves us to introduce <i>algebras</i>. Algebras exist as a simple
+extension of vector spaces. Specifically, they are vector spaces having an associated bilinear product. That is they take elements from
+two vector spaces and the product mapping sends these to a third vector space. In order to understand this view of derivatives along
+manifolds, we need to present the algebra on which the tangent operator is defined.
+</br></br>
+To do so, consider the following definition. Suppose you have a smooth, real-valued function $f:M \to Y$ defined at some point $p \in M$ where
+$M$ is a smooth manifold. We call the equivalence class of $f$ defined under the equivalence relation 
+$f_1 \sim f_2 \iff f_1(x) = f_2(x)$ for all $x$ in a neighborhood $U$ of $p$ a <i>germ</i>. We can extend the notion 
+of a germ to sets $S$ and $T$ via the relation $S \sim_p T$ if there exists a neighborhood $U$ of $p$ such that 
+$$S \cap U = T \cap U \neq \emptyset$$
+The way we're defining a germ here is more specific than is necessary. Germs are
+a more general concept which capture notions of local equivalence via some property for objects acting on a topological space. 
+Most often these objects are functions or maps with some sort of additional structure, e.g. smoothness or continuity, although this is
+not strictly necessary. To define a germ one needs only a notion of equality and a topological space, as these are the most abstract
+structures which allow us to define notions of locality via neighborhoods.
+</br></br>
+We denote the germ at $p$ of a function $f$ as $[f]_p$ and we denote the equivalence relation it defines as $f \sim_p g$.
+</br></br>
+A <b>$K$-linear derivation</b> $D:A_1 \to A_2$ where $A_1, A_2$ are algebras is a a $K$-linear map satisfying the product rule
+$$D(ab) = aD(b) + D(a)b$$
+
