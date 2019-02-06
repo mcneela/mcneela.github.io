@@ -92,10 +92,41 @@ The way we're defining a germ here is more specific than is necessary. Germs are
 a more general concept which capture notions of local equivalence via some property for objects acting on a topological space. 
 Most often these objects are functions or maps with some sort of additional structure, e.g. smoothness or continuity, although this is
 not strictly necessary. To define a germ one needs only a notion of equality and a topological space, as these are the most abstract
-structures which allow us to define notions of locality via neighborhoods.
+structures which allow us to define notions of locality via neighborhoods. When discussing germ equivalence between two maps $f$ and
+$g$ we can consider that these maps need not be defined on the same domain, provided some caveats are satisfied. We require that
+if $f$ has domain $S$ and $g$ has domain $T$ then $S$ and $T$ are germ equivalent via the definition for sets given above. We also
+require that $f|_{S \cap V} = g|_{T \cap V}$ for some smaller neighborhood $V$ of $p$ satisfying $p \in V \subseteq U$.
 </br></br>
 We denote the germ at $p$ of a function $f$ as $[f]_p$ and we denote the equivalence relation it defines as $f \sim_p g$.
 </br></br>
 A <b>$K$-linear derivation</b> $D:A_1 \to A_2$ where $A_1, A_2$ are algebras is a a $K$-linear map satisfying the product rule
 $$D(ab) = aD(b) + D(a)b$$
+<h3>Defining Tangent Vectors via Derivations</h3>
+Suppose $M$ is a $C^\infty$ manifold. For any $x \in M$ we define a <b>derivation</b> by choosing a linear map $D:C^\infty(M) \to 
+\mathbb{R}^n$ satisfying 
+$$\forall f, g \in C^\infty(M) \quad D(fg) = f(x)D(g) + D(f)g(x)$$
+We can define addition and scalar multiplication on the set of derivations in the same way we do for elements of a vector space. 
+We call the vector space obtained the tangent space to $x$ in $M$ and denote it as $T_x(M)$.
+</br></br>
+Let $\gamma: (-1, 1) \to M$ be a differentiable curve with $\gamma(0) = x$. Then the derivation $D_\gamma$ at $x$ is defined by
+$D_\gamma(f) := (f \circ \gamma)'(0)$
+</br></br>
+<h3>Getting Infinitesimal with Differentials</h3>
+When calculus is taught, the notion of a <i>differential</i> is frequently introduced and is usually vaguely described as the
+infinitesimal change in some variable. Haphazard teachers may introduce the chain rule by making generalizations such as
+that one can cancel differentials like $dx$ in the equation 
+$$\frac{df}{dz} = \frac{df}{dx} \frac{dx}{dz}$$
+but this isn't entirely true, or at least it doesn't tell the whole story. We also see the differential pop up in the notation for
+integration, i.e. we write $\int_{a}^b f(x) \ dx$ but we never really explain what the differential is and what it's doing there.
+</br></br>
+The general structure in which differential geometry operates makes things much clearer. What we'll see is that the differential
+is actually an object which instructs us in how to map between the tangent spaces of different manifolds. The differential is
+defined with respect to such a smooth map. In fact, the differential is an operator that takes in a map between manifolds and
+spits out a map between their tangent spaces. For more specifics, let's get to the definition.
+</br></br>
+<b><u>Definition</u></b> Let $\phi : M \to N$ be a smooth map between manifolds. Then we say the the differential of $\phi$ is
+the linear map $d\phi$ satisfying
+$$d\phi(D)(g) = D(g \circ \phi)$$
+and also satisfying
+$$d\phi d\psi = d(\phi \circ \psi)$$
 
