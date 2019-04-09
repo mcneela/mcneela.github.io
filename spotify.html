@@ -65,6 +65,7 @@ window.onSpotifyPlayerAPIReady = () => {
     console.log('Ready with Device ID', data.device_id);
     
     // Play a track using our new device ID
+    getCool()
     play(data.device_id);
   });
 
@@ -83,6 +84,16 @@ function play(device_id) {
      console.log(data)
    }
   });
+
+function getCool() {
+  $.ajax({
+    url: "https://api.spotify.com/v1/audio-features/2s3TL6sMAZwaJsUfVAXbFU",
+    type: "GET"
+    success: function(data) {
+      console.log(data)
+    }
+  }) 
+  }
 }
 </script>
 </head>
