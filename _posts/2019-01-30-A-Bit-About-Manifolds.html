@@ -4,6 +4,7 @@ categories: math
 layout: home_page 
 preview_img: images/manifold.png
 excerpt: A manifold is a structure
+categories: math
 ---
 <b> Work In Progress! </b>
 <h1>A Bit About Manifolds</h1>
@@ -129,4 +130,32 @@ the linear map $d\phi$ satisfying
 $$d\phi(D)(g) = D(g \circ \phi)$$
 and also satisfying
 $$d\phi d\psi = d(\phi \circ \psi)$$
+<h3>Taking this Tangent Thing a Step Further - Tangent Bundles</h3>
+Before giving the formal definition, I'd like to give a brief intuitive explanation of what a tangent bundle constitutes. The
+tangent bundle is unique in that it is itself a manifold $T(M)$, obtained by construction from the tangent spaces at each point
+of some different manifold $M$. It can also be thought of as a cartesian product between points $p \in M$ and the associated tangent
+ vectors $v_p \in T_p(M)$. The cartesian product formulation naturally gives rise to a projection map $\pi:T(M) \to M$ from the 
+ tangent bundle back to the manifold from whence it was constructed. Formally, we define the <i>tangent bundle</i> as the union of
+ tangent spaces
+$$T(M) = \bigcup \{T_p(M) | p \in M\}$$
+However, to make the manifold valid, we still need to specify an appropriate set of charts. 
+A manifold is said to be <i>parallelizable</i> if its tangent bundle is trivial.
+<h3>An Instance of a More General Phenomenon</h3>
+The tangent bundle is a specific instance of a concept called the <i>vector bundle</i>, which provides a method for constructing
+a vector space parameterized by a different sort of space such as a topological space $X$ or a manifold $M$. One of the characteristics
+of vector bundles is that they are <i>locally trivial</i>. They are also consist of a base space $V$ and a total space $M$. The base
+space is formed as a family of vector spaces over points defined in $M$, and that family is required to be smoothly varying.
 
+The formal definition involves both a base space $B$ and a total space $E$. A tangent
+
+<h3>A General Instance of an Even More General Phenomenon</h3>
+A vector bundle, as general as it is, is actually an instance of an even more general general phenomenon. The idea is we replace the
+<i>vector</i> part of <i>vector bundle</i> with a fiber of some mapping. This mapping can be anything we want, subject to a few 
+conditions. This is used to construct spaces which look locally like product spaces but from a global view have a more general
+topological structure.
+</br></br>
+<b><u>Formal Definition</u></b> A <i>fiber bundle</i> is a tuple $(B, E, \pi, F)$ consisting of a base space $B$, a total space $E$,
+a continuous surjective projection map $\pi:E \to B$ and a fiber $F$, all satisfying the following
+</br></br>
+1. For every $x \in E$, there exists an open neighborhood $U \subset B$ of $\pi(x)$ such that there exists a homeomorphism 
+$\varphi: \pi^{-1}(U) \to U \times F$
