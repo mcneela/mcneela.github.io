@@ -7,24 +7,22 @@ excerpt: A neural network can predict which movies are most likely to become
 hits at the box office!
 ---
 <h1 align="center">Machine Learning for the Movies</h1>
-
+</br></br>
 (Note: This article originally appeared at https://www.clarifai.com/blog/machine-learning-for-the-movies. If you are looking for a great computer
 vision solution for your machine learning product, I highly recommend you
 check out Clarifai!)
-
+</br></br>
 For many, machine learning is useful only insomuch that the insights it generates drive business or cut costs. Within the film industry, top studios have traditionally banked huge budgets on new scripts predicated on little but studio executives’ past experience, intuition, and hopeful conjecture. However, 20th Century Fox recently demonstrated that a paradigm shift within the entertainment industry may be underway. Their team of data scientists and researchers devised a machine learning model called Merlin Video that leverages film trailer data to predict which movies a filmgoer would be most likely to see given their viewing history and other demographic information. The team chose movie trailers as their object of study because they act as the most impactful determinant in a customer’s decision as to whether or not they will go to see a movie in theatres.
 
 <h2>Understanding the Model Architecture</h2>
 
+</br></br>
 At the heart of Merlin are convolutional neural networks (CNNs), a type of model which has classically been used to achieve state of the art results on image recognition tasks. Merlin employs these neural networks by applying them to the individual frames of a movie trailer; however, the architecture includes clever processing steps which allow the model to capture certain aspects of the trailer’s timing. The model also relies heavily on a technique called collaborative filtering that’s commonly used when devising recommender systems. The crux of the idea is that a recommendation model should incorporate a wide diversity of data sources. In addition, it relies on the belief that if user A has similar tastes to user B on known data, then that shared similarity in preferences is likely to extend to unknown data.
-
 <div align="middle">
 	<img src="/images/movie-model-breakdown.png"></img>
 </div>
-
-
 The output of the model relies primarily on what are called the movie and user vectors. The idea is that if accurate representations of each can be computed, then a proxy for the affinity a given user has for a given movie can be determined by computing the distance between their respective vectors. This distance is combined with user frequency and recency data and fed into a simple logistic regression classifier which provides the final output prediction giving the probability that user i will watch movie j.
-
+</br></br>
 So how are the movie and user vectors created? The user vector is actually pretty simple. It’s just the averaged sum of the vectors corresponding to the movies that that particular user attended. As such, the real magic of the model relies in the creation of the movie vector. The movie vector is, in fact, created by the CNN previously alluded to. The global structure of the network is that it defines a number of features designed to capture specific actions relevant to a movie’s content. For example, one feature might seek to determine whether a trailer involves long, scenic shots of nature. This could indicate that the trailer is for a documentary. Another feature might try to detect a fast-paced fist fight indicative of an action movie. A key aspect of the model is that it goes beyond conventional CNNs by capturing the pacing and temporality of film sequences. That means it can tell the difference between quickly flickering frames which might indicate a flashback or a high speed chase and long, drawn out shots of dialogue or other slow-moving moments. Here’s the full diagram of the model which computes the movie vector.
  
 <div align="middle">
@@ -39,8 +37,7 @@ The team at Fox trained the model on YouTube8M, a rich dataset provided by Googl
 	<img src="/images/model-architecture-flow.png"></img>
 </div>
 
-(Image Credit: https://cloud.google.com/blog/products/ai-machine-learning/how-20th-century-fox-uses-ml-to-predict-a-movie-audience)
-
+</br></br>
 If you take a look at the above diagram which lays out the Merlin architecture’s data flow, you’ll see that they also feed the model film metadata, textual synopses, and data about the customer acquired at the ticket box.
 
 <h2>Evaluating the Model</h2>
