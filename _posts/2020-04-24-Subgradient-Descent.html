@@ -1,0 +1,315 @@
+---
+title: Subgradient Descent 
+categories: machine_learning
+layout: home_page 
+preview_img: images/flamethrower_homepage.png
+excerpt: An optimization algorithm for non-differentiable objective functions.
+---
+<p><i>This post was originally featured on my other blog at <a href="https://flamethrower.ai/blog/206669/subgradient-descent">Flamethrower AI</a></i></p>
+<h1>Introduction</h1>
+<p>You've probably heard of the gradient descent algorithm. It's probably the most widely used algorithm
+in machine learning, used to train everything from neural networks to logistic regression. What you probably
+didn't know though, is that it doesn't always work. That's right, gradient descent has some preconditions that
+your loss function needs to satisfy in order for the algorithm to run. One of these is that the loss function
+must be differentiable. That means that when you need to optimize a loss function that's not differentiable,
+such as the L1 loss or hinge loss, you're flat out of luck.</p>
+</br>
+<p><i>Or are you?</i> Thankfully, you're actually not. There's a little-known method that's been around for a long
+time within the field of convex optimization that uses the notion of <i>subgradients</i> to perform optimization.
+We're going to tackle the theory behind it in this post today, then build our own implementation of it in Python
+in order to create our own soft-margin SVM classifier with hinge loss to classify text messages as spam or ham.
+Let's get started.</p>
+
+<h1>The Theory</h1>
+
+<h2>The Definition of a Subgradient</h2>
+<p>A subgradient is a generalization of the gradient which is useful for non-differentiable, but convex, functions.
+The basic idea is this: When a function is convex, you can draw a line (or in higher dimensions, a hyperplane) 
+through each point $f(x)$ and that line will
+underapproximate the function everywhere. This is baked into the definition of convexity. In fact, for many points
+$x$ there is more than one such line. A subgradient is simply any one of these lines, and it is defined mathematically
+as
+$$g \in \mathbb{R}^n \text{ such that } f(z) \geq g^\top (z - x) \text{ for all } z \in \text{dom}(f)$$
+The definition can be a little bit confusing, so let me break it down piece by piece. The vector $g$ is the subgradient
+and it's also what's called a <i>normal vector</i>.
+It lies perpendicular to the hyperplane which underapproximates $f(z)$. The normal vector is all that's needed to define
+the angle of the hyperplane, and by varying $z$, we can land at any point on this hyperplane.</p>
+</br>
+<p>Another way of characterizing the subgradient $g$ is via what's called the <i>epigraph</i> of $f$. The epigraph of $f$
+is just all the area above and including the graph of $f$. In other words, it's the set you'd get if you colored in above
+the graph of $f$. We say that $g$ is a subgradient if the hyperplane it defines <i>supports</i> the epigraph of $f$.
+</p>
+</br>
+<p>When we say "support" here, it has a particular meaning and is not to be confused with the support of a function in an
+analysis sense. More concretely, a hyperplane is said to support a set $S$ if it intersects $S$ in at least one point
+(for our purpose, this point is $f(x)$) and the remainder of the entire set $S$ lies on one side of the hyperplane.
+Because the epigraph of a convex function lies above its subgradient at every point, this is a natural way to conceptualize
+things.</p>
+</br>
+<h2>Subdifferentials</h2>
+<p>Now that we've introduced subgradients, lets move onto a broader concept, that of a <i>subdifferential</i>. We say that
+a function $f$ is <i>subdifferentiable</i> if for each point $x \in \text{dom}(f)$ there exists a subgradient $g_x$ at
+that point. Now, its important to note that the subgradient $g_x$ for a point $x$ is not unique. In fact, for any point
+$x$, there can exist either 0, 1, or infinitely many such subgradients. We call the set of all such subgradients at a point
+$x$ the <i>subdifferential</i> of $f$ at that point, and we denote it as $\partial f(x)$. In other words,
+$$\partial f(x) = \{g_x \mid f(z) \geq g_x^\top (z - x)\quad \forall z \in \text{dom}(f)\}$$
+So why talk about subdifferentials? Well, they have some nice properties and integrate nicely with the regular theory of
+differentiation. Allow me to explain.</p>
+</br>
+<p>First off, the subdifferential $\partial f(x)$ associated with a point $x$ is <b>always</b> a closed, convex set. This
+follows from the fact that it can be viewed as the intersection of a set of infinite half-spaces.
+$$\partial f(x) = \bigcap_{z \in \text{dom}(f)} \{g_x \mid f(z) \geq g_x^\top (z-x)\quad \forall z \in \text{dom}(f)\}$$
+This means the problem of finding the optimal subgradient $g_x$ at a given point $x$ is a solvable one, because doing
+optimization over convex sets is a solved problem.</p>
+</br>
+<p>The more important point, though, is that the subdifferential satisfies many of the same laws of calculus as the 
+standard differential. Concretely, much like regular differentials, we can
+<ul>
+    <li>Scale differentials by constants - $\partial f(\alpha x) = \alpha \partial f(x)$</li>
+    <li>Distribute over sums, integrals, and expectation - $\partial \int f(x)\ dx = \int \partial f(x)\ dx$</li>
+</ul>
+</p>
+</br>
+<p>Another important point is the direct connection of gradients and subdifferentials. If a function $f$ is differentiable
+at a point $x$, then there exists only one subgradient $g_x$ to $f$ at $x$ and for the subdifferential we have
+$$\partial f(x) = \{g_x = \nabla f(x)\}$$
+In other words, there is a direct correspondence between and uniqueness of gradients and subgradients in the case where
+$f$ is differentiable. Thus in some sense, the subgradient is a generalization of the gradient that applies in more general situations,
+(e.g. nondifferentiability).</p>
+<h2>Enough with the Definitions Already</h2>
+<p>Okay, let's move on from tedious definitions and see how we can start using subgradients to solve a problem that's
+typically intractable with standard, gradient-based methods. For this, let's take a look at the $\ell_1$ norm.</p>
+</br>
+<p>The $\ell_1$ norm is defined as
+$$\|x\|_1 = \sum_{i=1}^n |x_i|$$
+It is a nondifferentiable and convex function of $x$. This means that while we can't tackle its optimization with gradient descent,
+we can approach it using the method of subgradients. Let's see how that works.</p>
+</br>
+<p>Before we get started, we need to recite a quick fact about subgradients. Namely, if we have a sequence of functions $f_1, \ldots, f_n$
+where each of the $f_i$ are convex and subdifferentiable. Then their pointwise maximum $f(x)$, defined as
+$$f(x) = \max_{i} f_i(x)$$
+is also subdifferentiable and has
+$$\partial f(x) = {\bf Co} \left(\bigcup \{\partial f_i(x) \mid f_i(x) = f(x)\} \right)$$
+In other words, to find the subdifferential of the max, $f(x)$, we take the convex hull of the union of subdifferentials
+for each function $f_i(x)$ which attains the pointwise maximum of $\{f_1, \ldots, f_n\}$ at each point $x$.
+It's a little bit of a convoluted and long-winded statement, but hopefully it will make more sense when we apply it to the
+problem of calculating the subgradient of the $\ell_1$ norm.</p>
+</br>
+<h3>Applying the Rule</h3>
+<p>In order to apply this rule of maximums, we have to find a way to rewrite the $\ell_1$ norm as a pointwise maximum of
+convex, subdifferentiable functions. This is actually pretty easy to do. To see why, consider the vector
+$$s = [s_1, \ldots, s_n] \quad s_i \in \{-1, 1\}$$
+where each of the $s_i$ is either equal to 1 or -1. The idea is you could set $s_i = -1$ when $x_i < 0$ and $s_i = 1$
+when $x_i > 0$. When $x_i = 0$, either $s_i = 1$ or $s_i = -1$ can be used. Thus, we have
+$$\ell_1(x) = \max \{s^\top x | s_i \in \{-1, 1\} \}$$
+Since we've rewritten the $\ell_1$ norm as a max of functions, we can now apply the rule to find its subgradient.
+Since each of the $f_i$ just have the form $s^T x$, they are each differentiable with unique (sub)gradient $s$.
+Therefore the subgradient of $f = \max_i f_i$ is just the convex hull of this set of subgradients, which can be
+expressed as
+$$\{g \mid \|g\|_\infty \leq 1, g^Tx = \|x\|_1\}$$
+</p>
+<h2>The Subgradient Method</h2>
+<p>Now, we arrive at our culminating theoretical moment, that of applying subgradients to problems of convex optimization.
+We do so using what's called the <i>subgradient method</i> which looks almost identical to gradient descent. The algorithm
+is an iteration which asserts that we make steps according to
+$$x^{(k+1)} = x^{(k)} - \alpha_k g^{(k)}$$
+where $\alpha_k$ is our learning rate. There are a few key differences when compared with gradient descent though. The first
+of these is that our $\alpha_k$ must be fixed in advance and not determined dynamically on the fly. The next is that the subgradient
+method is not a true descent method. This is because each subsequent step $x^{(k+1)}$ is not guaranteed to decrease our objective
+function value. In general, we keep track of our objective values and pick their max at the end of iteration, i.e. we set
+$$f^{\star} = \max_k \{f^{(k)} = f(x^{(k)})\}$$</p>
+
+<p>To see why the objective function value is not guaranteed to decrease with each iterate, we need only look to the definition
+of a subgradient. Namely, we have
+$$f(x^{(k+1)}) = f(x^{(k)} - \alpha_k g^{(k)}) \geq f(x^{(k)}) + {g^{(k)}}^\top(x^{(k)} - \alpha_k g^{(k)} - x^{(k)}) = 
+f(x^{(k)}) - g^{(k)}\alpha_k g^{(k)} = f(x^{(k)}) - \alpha_k \|g^{(k)}\|_2^2$$
+Since $f(x^{(k+1)})$ can be any value greater than $f(x^{(k)}) - \alpha_k \|g^{(k)}\|_2^2$ including $f(x^{(k)}) + C$ for
+some positive constant $C$, it's clear that the subgradient method is not a guaranteed descent method, and the fact that
+the decrease in $f(x)$ at each time step is bounded below by $f(x^{(k)}) - \alpha_k \|g^{(k)}\|_2^2$ speaks to some of the
+slowness of the method. That said, the algorithm is guaranteed to converge to within $\epsilon$ of the optimum in some semi-reasonable
+amount of time, so it's not all bad. One just needs to keep in mind the caveats of the method.</p>
+
+<h1>Let's Get Practical</h1>
+<p>Now that we've finally elucidated most of the math behind subgradients, let's start applying them to a real world problem. In this
+exercise, we'll devise a soft-margin SVM to classify text messages as either "spam" or "ham". We'll then train it using hinge loss
+and the subgradient method and implement the entire thing in Python code, from scratch. Let's get started.</p>
+
+<h2>An SVM-like Classifier</h2>
+<p>I'm not going to go into the entire theory of SVMs as that is worthy of a series of posts all on its own. However, I will walk through
+the basics of how the classifier will work, and then jump into the coding of the subgradient algorithm.</p>
+<p>In short, an SVM uses a hyperplane of the form $\mathbf{w}\mathbf{x} + b$ to classify points of a training set into one of two classes.
+Points that lie to the left of the hyperplane are assigned to one class, whereas points that lie to the right are assigned to the other.
+Mathematically, this classification can be represented as the function
+$$y = \text{sign}(\mathbf{w}\mathbf{x} + b)$$
+The model is trained in such a way as to maximize the <i>margin</i> that the hyperplane decision boundary produces. Roughly speaking,
+this is the spacing between the decision boundary and the closest point to either side.</p>
+<p>When the data in the training set is linearly separable, we can classify it perfectly using an SVM decision boundary and the definition
+of margin. However, rarely in life does our data come to us with perfect separation between the classes. As such, we give the opportunity
+to the SVM to make some mistakes while still aiming to classify most of the points correctly and maximize margin. For this purpose, we introduce
+<i>slack variables</i> and call the resultant model a <i>soft-margin SVM</i>. To learn more about all of these architecture components, 
+I encourage you to read any of the many great articles available online or in textbooks.</p>
+<p>In this lesson, we're going to train a variant of a soft-margin SVM. Soft-margin SVMs are trained using the <i>hinge loss</i> which is defined
+mathematically as 
+$$\ell(y, t) = \max (0, 1 - ty)$$
+where $y = \mathbf{w}{x} + b$ is our model's prediction and $t$ is the target output value. This loss function is not differentiable at $0$, so
+you know what that means? That's right, it's time for the subgradient method to shine! To use it, we need to calculate the subgradient of this loss function.</p>
+<h3>The Hinge Loss Subgradient</h3>
+<p>In order to train the model via the subgradient method we'll need to know what the subgradients of the hinge loss actually are. Let's calculate
+that now. Since the hinge loss is piecewise differentiable, this is pretty straightforward. We have
+$$\frac{\partial}{\partial w_i} (1 - t(\mathbf{w}\mathbf{x} + b)) = -tx_i$$
+and
+$$\frac{\partial}{\partial w_i} \mathbf{0} = \mathbf{0}$$
+The first subgradient holds for $ty < 1$ and the second holds otherwise.</p>
+
+<h3>The Code</h3>
+<p>Okay, now with the math out of the way, let's get to some of the code. For this task we'll be classifying text messages as "ham" or "spam" using
+the data available <a href="https://www.kaggle.com/uciml/sms-spam-collection-dataset">here</a>. Download the file "spam.csv" and extract it to a
+location of your choice. I created a subfolder in my code directory called <code>data</code> and placed it there.</p>
+
+<h4>Loading the Data</h4>
+<p>Let's create a function to load and transform the data. We'll use the scikit-learn <code>CountVectorizer</code> class to create
+a bag-of-words representation for each input text message in the training data set. We'll also use some of the <code>gensim</code>
+preprocessing utilities to help clean up the inputs. I created the following functions which do all of the above.</p>
+<pre><code class="language-python">import numpy as np
+
+from gensim.parsing.preprocessing import preprocess_string
+from sklearn.feature_extraction.text import CountVectorizer
+
+def clean_text(l):
+    fields = l.strip().split(',')
+    return preprocess_string(fields[1])
+
+def get_texts(lines):
+    return list(map(clean_text, lines))
+
+def convert_label(l, hs_map):
+    fields = l.strip().split(',')
+    key = preprocess_string(fields[0])[0]
+    return hs_map[key]
+
+def get_labels(lines, hs_map):
+    return list(map(lambda x: convert_label(x, hs_map), lines))
+
+def load_data(file='data/spam.csv'):
+    lines = open(file, 'r', encoding='ISO-8859-1').readlines()
+    lines = lines[1:] # remove header line
+    hs_map = {'ham': 1, 'spam': -1}
+    y = get_labels(lines, hs_map)
+    texts = get_texts(lines)
+    texts = [' '.join(x) for x in texts]
+    bow = CountVectorizer()
+    X = bow.fit_transform(texts)
+    return X, np.array(y)</code></pre>
+<p>We make generous use of the Python <code>map</code> functionality to map various preprocessing functionality across our strings. The actual
+bag of words vectorization is a simple one-line call thanks to sklearn's <code>CountVectorizer</code>. Note that <code>CountVectorizer</code>
+returns a scipy <code>sparse matrix</code> which will introduce some caveats into our training code. More on that in a bit.</p>
+<p>Next, let's start implementing the loss functions. This is pretty simple with <code>numpy</code>. We have,</p>
+<pre><code class="language-python">def hinge_loss(t, y):
+    return np.maximum(0, 1 - t * y)
+
+def hinge_subgrad(t, y, x):
+    if t * y < 1:
+        subgrad = (-t * x).toarray()
+    else:
+        subgrad = np.zeros(x.shape)
+    return subgrad</code></pre>
+<p>We have to call the <code>.toarray()</code> method on the first clause of <code>hinge_subgrad</code> due to the fact that <code>x</code>
+will be a sparse matrix. This method just turns <code>x</code> into a regular numpy array. Note also that we use <code>np.maximum</code>
+rather than <code>np.max</code>. <code>np.maximum</code> is more along the lines of the vector-based version of <code>np.max</code>.</p>
+<p>Now, the hinge loss as we've implemented it only calculates the loss for a single training example $\{(x, t)\}$. We want to add in a
+function which aggregates the loss across all examples in the training set. We can do that with the following function</p>
+<pre><code class="language-python">def loss(w, X, y):
+    preds = X @ w
+    losses = [hinge_loss(t, y_) for t, y_ in zip(y, preds)]
+    return np.mean(losses)</code></pre>
+<p>Finally, we'll add a couple of functions that handle making predictions for us given <code>w</code> and <code>x</code>. Note, I'm not
+including a variable <code>b</code> in either of these. That's because we can collapse <code>b</code> into <code>x</code> by adding an
+extra dimension to <code>x</code> and <code>w</code> with starting value 1.</p>
+<pre><code class="language-python">def predictor(w, x):
+    return x @ w
+
+def predict(w, X):
+    preds = X @ w
+    z = (preds > 0).astype(int)
+    z[z == 0] = -1
+    return z</code></pre>
+<p>The function <code>predictor</code> takes in a single training value <code>x</code> and the weight vector <code>w</code> and returns an
+unnormalized prediction <code>y = x @ w</code> which is fed to our <code>hinge_loss</code> function. On the other hand, <code>predict</code>
+takes in an entire batch of training inputs <code>X</code> and returns an output vector of 1's and -1's. We'll use this to calculate the
+accuracy of our model during both training and the final runtime.</p>
+<p>Finally, we need a simple method that we can use to initialize our weight vector <code>w</code> at the start of training.</p>
+<pre><code class="language-python">def init_w(x):
+    return np.random.randn(x.shape[1])</code></pre>
+
+<h3>Coding the Subgradient Method</h3>
+<p>Finally, we arrive at our pinnacle moment, that of coding up the subgradient method. The code for this method is a bit involved, but it
+contains some design choices that are interesting to consider. Let's take a look at the finished product first, then walk through it step
+by step.</p>
+<pre><code class="language-python">def subgrad_descent(targets, inputs, w, eta=0.5, eps=.001):
+    curr_min = sys.maxsize
+    curr_iter, curr_epoch = 0, 0
+    while True:
+        curr_epoch += 1
+        idxs = np.arange(targets.shape[0])
+        np.random.shuffle(idxs)
+        targets = targets[idxs]
+        inputs = inputs[idxs]
+        for i, (t, x) in enumerate(zip(targets, inputs)):
+            curr_iter += 1
+            if curr_iter % 100 == 0:
+                preds = predict(w, inputs)
+                curr_acc = np.mean(preds == targets)
+                converged = curr_acc > .95
+                if converged:
+                    return w, inputs, targets
+                print(f"Current epoch: {cur_epoch}")
+                print(f"Running iter: {curr_iter}")
+                print(f"Current loss: {cur_min}")
+                print(f"Current acc: {curr_acc}\n")
+            y = predictor(w, x)[0]
+            subgrad = hinge_subgrad(t, y, x)
+            w_test = np.squeeze(w - eta * subgrad)
+            obj_val = loss(w_test, inputs, targets)
+            if obj_val < cur_min:
+                cur_min = obj_val
+                w = w_test</code></pre>
+<p>Now, to start, I'll say that my method is subtly different from the subgradient method I detailed in the mathematical walkthrough. That's
+because in that version, all objective function values $f(w^k)$ are kept track of from start to end and the max is taken at the end of the
+iteration. I take a slightly different approach. I start with an iteration $w^k$ and I only step to $w^{k+1}$ if it decreases the current
+minimum loss seen across the dataset. This seems to work well, allowing me to achieve greater than 95% accuracy once the model finishes training,
+but I encourage you to try out both approaches and see which works best. You'll see that I start with a current objective function value of
+<code>sys.maxsize</code>. This is the max value that Python can represent, so any subsequent function value iterates are guaranteed to be less
+than this value. Next, I iterate <code>while True</code> and only break from the iteration once I achieve some desired accuracy on the training
+set (here I have this set to 95%). Every 100 iterations, I evaluate the current model on the training set and see if it achieves this threshold.
+Note, due to time constraints, I'm being a bit careless and not creating validation sets, etc. That's because the purpose of this tutorial is to
+demonstrate the viability of the subgradient method, but not to serve as an example of training procedure best practices. I encourage you to clean
+things up in your own code. It's a great learning exercise.</p>
+<p>Now, the method shuffles the dataset at the start of each epoch. You can see this in the lines</p>
+<pre><code class="language-python">curr_epoch += 1
+idxs = np.arange(targets.shape[0])
+np.random.shuffle(idxs)
+targets = targets[idxs]
+inputs = inputs[idxs]</code></pre>
+<p>This is a simple shuffling method based on randomizing the indices into the dataset. While sklearn has built in shuffling methods, I try to rely
+on it as little as possible because, quite frankly, what's the fun in having some external library handle everything? The Flamethrower AI ethos is
+built on learning by building everything from scratch, so that's what I'm aiming to do here.</p>
+<p>Next, I iterate over each example in the training set. In effect, I'm performing <i>stochastic</i> subgradient descent.
+At each step, I get the unnormalized prediction <code>y = predictor(w, x)[0]</code> using the current weight vector <code>w</code> and calculate
+the corresponding <code>subgrad</code>. I then check what the updated weight vector as calculated by the subgradient method would be (given here
+as <code>w_test = np.squeeze(w - eta * subgrad)</code>) and evaluate the loss that that updated vector achieves across the <i>entire</i> dataset.
+If that <code>obj_val</code> is less than the <code>cur_min</code> then I set it to be the new <code>w</code>. Otherwise, I skip the update. Either
+way, that completes the iteration, and the next round of updates is subsequently computed in the same manner, ad infinitum, until some desired accuracy
+is reached.</p>
+<h1>Conclusion</h1>
+<p>That about sums up the subgradient method. I was able to reach >95% accuracy with my hand-coded method, and I'm sure it's even possible to do better
+than that with some simple tweaks to the data normalization process, refining the training updates, fiddling with learning rates, etc. However, I
+think what I have here provides a solid demonstration of the workability of this method. Note that training <i>will be slow.</i> This is for a couple of
+reasons. First, the rate of convergence os the subgradient method is on the slower side. Second, we're implementing this in pure Python, so we're 
+certainly not going to be breaking any speed records here. Don't get discouraged if you compare this method against the built-in Sklearn SVM. The
+sklearn code is actually just a thin wrapper over <code>libsvm</code> which is implemented entirely in heavily optimized C++, so naturally it's going to
+be a lot faster. That said, this method converges relatively quickly on this dataset. I was getting good results in 5-10 minutes, certainly a lot less
+time than you'd have to wait to train your favorite deep learning classifier on a really large dataset (not this one). Anyway, I hope this tutorial
+introduced you to some of the fun of the subgradient method and advanced optimization techniques. If you want to get access to the repository with the
+full solutions code as well as access to more advanced tutorials like this one, then I encourage you to sign up for a full Flamethrower AI membership.
+It's only $20/month, and you get access to all our current and future courses for that one, low, monthly price. Cheers!</p>
+
